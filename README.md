@@ -3,7 +3,7 @@ Minimal example of how to send data content from a client side file upload to a 
 
 ## Set up
 ```
-git clone
+git clone https://github.com/bene200/mini-express-example.git
 cd mini-express-example
 npm install
 ```
