@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>Tiny express.js app</title>
+    <!-- we can include styles from our assets/styles/ directory -->
+    <link rel="stylesheet" type="text/css" href="assets/styles/styles.css">
+  </head>
+  <body>
+    <h1>Hello I'm the front end</h1>
+    <input type="file" id="txtfile" size="40">Upload a txt file</input><br /><br />
+    <button id="send">Send file to server</button><br /><br />
+    <textarea id="response" rows="1" cols="50"></textarea><br />
+
+    <!-- we can also include images from the assets/styles folder -->
+    <p>
+      Or look at this cat
+    </p>
+    <img src='assets/img/cat.png' />
+
+    <!--
+      the javascript logic could also be outsourced to a separate file.
+      You should do this once it gets a bit more complex.
+    -->
+    <script>
+      //the uploaded file should be read and sent to the server once the 'send' button is clicked
+      document.getElementById('send').addEventListener('click', function(evt){
+        //we need a file reader object to read the content of an uploaded file
+        var fr = new FileReader();
+
+        //once the file is read the onload function will be executed
+        fr.onload = function(e) {
+            // e.target.result should contain the text of the uploaded file
+
+            //now we want to send that data to the server to save it
+            //therefore we need an XMLHttpRequest object
+            var request = new XMLHttpRequest();
+            //the following function defines what happens when we recieve an answer or error
+            //after sending the request
+            request.onreadystatechange = function(){
+              if (request.readyState == 4 && request.status == 200) {
+                document.getElementById("response").innerHTML = request.responseText;
+              }
+            }
+            //open a new POST request
+            request.open('POST', 'uploads', true);
+            //set appropriate header to send JSON data
+            request.setRequestHeader("Content-type", "application/json");
+            //send stringified JSON data (the content of the uploaded file)
+            request.send(JSON.stringify({ content: e.target.result}));
+        };
+
+        //read the file as text
+        var txtfile = document.getElementById('txtfile');
+        //but only if there is a file in the file upload
+        if(txtfile.files[0]){
+          fr.readAsText(txtfile.files[0]);
+        }
+      });
+    </script>
+  </body>
+</html>
